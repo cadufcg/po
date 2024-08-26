@@ -8,13 +8,44 @@ import java.util.Random;
 public class Tabuleiro implements ActionListener{
     int[][] tabuleiro,player;int i,j,x,y,linha,armadilhas,armadilhas2,inimigos;JButton[][] botao;
     int posicao;JLabel pos,vida,ataque,defesa,pot;Random random;
-    Jogador jogador;ImageIcon[] icones;Inimigo inimigo;
+    Jogador jogador;ImageIcon[] icones;Inimigo inimigo;JFrame menu;
     Tabuleiro(Jogador jogador){
-        JFrame menu=new JFrame();
+        menu=new JFrame();
         menu.setLayout(null);
         this.jogador=jogador;
-        armadilhas=5;armadilhas2=5;inimigos=5;
-        random=new Random();tabuleiro=new int[10][5];botao=new JButton[10][5];posicao=00;icones();
+        armadilhas=5;armadilhas2=5;inimigos=5;//max de armadilhas e inimigos em um tabuleiro
+        random=new Random();tabuleiro=new int[10][5];botao=new JButton[10][5];posicao=00;icones();//matriz tabuleiro para guardar a informacao e botao para mostrar na tela
+        botoes(botao);
+        x=0;y=0; //posicao inicial
+        pos=new JLabel("Posição:"+String.valueOf(x)+String.valueOf(y));pos.setBounds(100,600,120,20);
+        vida=new JLabel("Vida:"+jogador.getVida());vida.setBounds(220,600,120,20);
+        ataque=new JLabel("Ataque:"+jogador.getAtaque());ataque.setBounds(220,625,120,20);
+        defesa=new JLabel("Defesa:"+jogador.getDefesa());defesa.setBounds(220,650,120,20);
+        pot=new JLabel("Poções:"+jogador.getPocao());pot.setBounds(290,600,120,20);
+        inimigo=new Inimigo(20,20,20);
+        aleatorizar();update();
+        menu.add(pos);menu.add(vida);menu.add(ataque);menu.add(defesa);menu.add(pot);
+        menu.setSize(960,768);
+        menu.setVisible(true);
+        menu.setLocationRelativeTo(null);
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {//metodo apertar botoes 
+        for(i=0;i<10;i++){
+            for(j=0;j<5;j++){
+                if(e.getSource() == botao[i][j]){
+                    if(tabuleiro[i][j]==0&(i==x+1&j==y)||(i==x&j==y+1)||(i==x-1&j==y)||(i==x&j==y-1)||(i==x&j==y)){
+                        x=i;y=j;
+                        movimento(i,j);
+                        update();
+                    }else{
+                    botao[i][j].setEnabled(false);
+                    }
+                }
+            }
+        }
+    }
+    private void botoes(JButton[][] botao){//metodo inicializa botoes na tela
         for(i=0;i<10;i++){
             for(j=0;j<5;j++){
                 x=20+90*i;
@@ -30,37 +61,8 @@ public class Tabuleiro implements ActionListener{
                 }
             }
         }
-        //String posi=String.valueOf(posicao);
-        x=0;y=0;
-        pos=new JLabel("Posição:"+String.valueOf(x)+String.valueOf(y));pos.setBounds(100,600,120,20);
-        vida=new JLabel("Vida:"+jogador.getVida());vida.setBounds(220,600,120,20);
-        ataque=new JLabel("Ataque:"+jogador.getAtaque());ataque.setBounds(220,625,120,20);
-        defesa=new JLabel("Defesa:"+jogador.getDefesa());defesa.setBounds(220,650,120,20);
-        pot=new JLabel("Poções:"+jogador.getPocao());pot.setBounds(290,600,120,20);
-        inimigo=new Inimigo(20,20,20);
-        aleatorizar();update();
-        menu.add(pos);menu.add(vida);menu.add(ataque);menu.add(defesa);menu.add(pot);
-        menu.setSize(960,768);
-        menu.setVisible(true);
-        menu.setLocationRelativeTo(null);
     }
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        for(i=0;i<10;i++){
-            for(j=0;j<5;j++){
-                if(e.getSource() == botao[i][j]){
-                    if(tabuleiro[i][j]==0&(i==x+1&j==y)||(i==x&j==y+1)||(i==x-1&j==y)||(i==x&j==y-1)||(i==x&j==y)){
-                        x=i;y=j;
-                        movimento(i,j);
-                        update();
-                    }else{
-                    botao[i][j].setEnabled(false);
-                    }
-                }
-            }
-        }
-    }
-    private void movimento(int x,int y){
+    private void movimento(int x,int y){//metodo para habilitar e desabilitar os botoes e comecar as situacoes
         for(i=0;i<10;i++){
             for(j=0;j<5;j++){
                 if(i==x+1&j==y||i==x&j==y+1||i==x-1&j==y||i==x&j==y-1){
@@ -75,20 +77,20 @@ public class Tabuleiro implements ActionListener{
             }
         }
     }
-    public void situacao(){
-        if(tabuleiro[i][j]==5){
+    public void situacao(){ //se o jogador pisar em um botao que nao é grama acontece uma situacao
+        if(tabuleiro[i][j]==5){ //se foi uma pocao ele vai ganhar uma pocao
             jogador.setPocao(jogador.getPocao()+1);
-            tabuleiro[i][j]=0;
-        }else if(tabuleiro[i][j]==1){
+            tabuleiro[i][j]=0; //a pocao no chao vira grama
+        }else if(tabuleiro[i][j]==1){ //se for buraco ele perde vida fixa
             jogador.setVida(jogador.getVida()-10);
-        }else if(tabuleiro[i][j]==2){
-            float dano=random.nextFloat(20);
+        }else if(tabuleiro[i][j]==2){  //se for a outra armadilha ele perde vida de 1 até 20
+            float dano=random.nextFloat(20)+1;
             jogador.setVida(jogador.getVida()-dano);
-        }else if(tabuleiro[i][j]==3||tabuleiro[i][j]==4){
+        }else if(tabuleiro[i][j]==3||tabuleiro[i][j]==4){//se for um inimigo ele inicia uma batalha
             new Batalha(jogador,inimigo);
         }
     }
-    private void update(){
+    private void update(){ //metodo para atualizar as informacoes na tela
         pos.setText("Posição:"+String.valueOf(x)+String.valueOf(y));
         vida.setText("Vida:"+jogador.getVida());
         ataque.setText("Ataque:"+jogador.getAtaque());
@@ -100,8 +102,8 @@ public class Tabuleiro implements ActionListener{
             }
         }   
     }
-    private void aleatorizar(){
-        for(i=0;i<10;i++){
+    private void aleatorizar(){ //metodo usado no inicio para distribuir o tabuleiro, melhorar a distribuicao,
+        for(i=0;i<10;i++){     //o jeito que eu fiz nao garante o maximo de distribuicao e o chefe nao anda na ultima linha ainda
             for(j=0;j<5;j++){
                 if(i==0&j==0){
                     tabuleiro[i][j]=0;
@@ -124,7 +126,7 @@ public class Tabuleiro implements ActionListener{
             }
         }
     }
-    private void icones(){
+    private void icones(){ //metodo para definir as imagens dos obstaculos
         icones = new ImageIcon[7];
         icones[0] = tamanho("grass.png");//grama
         icones[1] = tamanho("hole.jpg");//armadilha
@@ -140,13 +142,13 @@ public class Tabuleiro implements ActionListener{
             icones[6] = tamanho("3.png");//jogador
         }              
     }
-    private ImageIcon tamanho(String imagem){
+    private ImageIcon tamanho(String imagem){ //tamanho imagem
         ImageIcon icone = new ImageIcon(imagem);
         Image img = icone.getImage();
         Image resizedImage = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
     }
-    private ImageIcon returnimage(int i,int j){
+    private ImageIcon returnimage(int i,int j){ //metodo para saber o que esta no botao no momento, retornando a imagem especifica
         if(i==x&j==y){
             return icones[6];
         }
