@@ -5,7 +5,8 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Menu extends JFrame implements ActionListener{
-    JButton botao1,botao2,botao3;Selecao sel;JButton[] botoes;String[] textos;Container menu;
+    JButton botao1,botao2,botao3;Selecao sel;
+    JButton[] botoes;String[] textos;Container menu;
     Menu(){
         menu= getContentPane();
         setLayout(null);
@@ -26,11 +27,11 @@ public class Menu extends JFrame implements ActionListener{
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == botoes[0]){
+        if(e.getSource() == botoes[0]){//jogar normal
             new Selecao();
-        }else if(e.getSource() == botoes[1]){
+        }else if(e.getSource() == botoes[1]){//jogar debug, no final botar instanciar a selecao
             new Jogador(0,0,0,0);
-        }else if(e.getSource() == botoes[2]){
+        }else if(e.getSource() == botoes[2]){//Sair
             JFrame frame = new JFrame();
             String[] options = new String[2];
             options[0] = "Sim";
