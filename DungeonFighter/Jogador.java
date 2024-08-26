@@ -1,7 +1,7 @@
 package DungeonFighter;
 
 public class Jogador extends Inimigo{
-    private int classe;
+    private int classe; //jogador guarda classe e as pocoes
     private int pocao;
     public int getPocao() {
         return pocao;
@@ -15,7 +15,7 @@ public class Jogador extends Inimigo{
     public Jogador(float vida,float ataque,float defesa,int classe){
         super(vida, ataque, defesa);
         this.classe=classe;
-        new Tabuleiro(this);
+        new Tabuleiro(this); //instancia tabuleiro com esse objeto
     }
     public void tomadano(float dano){
         this.setVida(this.getVida()-(dano));
