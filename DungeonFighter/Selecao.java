@@ -14,69 +14,69 @@ public class Selecao extends JFrame implements ActionListener{
     public Selecao(){
         //adicionar slider atributos e classes
         super("Classe");
-        stat=10;
+        stat=10; //pontos de atribuicao
         vida=ataque=defesa=0;
-        botoes();
+        botoes(); //metodos para criar a tela
         setSize(700, 550); //tamanho janela
         setVisible(true); //janela visivel
         setLocationRelativeTo(null); //janela centralizada
  }
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == botoes[0]){
+		if(e.getSource() == botoes[0]){ //classe 1
             stats(10, 20, 30, 0);
-	    }else if(e.getSource() == botoes[1]){
+	    }else if(e.getSource() == botoes[1]){ //classe 2
             stats(20, 15, 15, 1);
-        }else if(e.getSource() == botoes[2]){
+        }else if(e.getSource() == botoes[2]){ //classe 3
             stats(30, 20, 10, 2);
-        }else if(e.getSource() == labvm){
+        }else if(e.getSource() == labvm){ //label vida mais
             if(stat>0){
                 vida+=1;
                 stat-=1;
                 setstats();
             }
-        }else if(e.getSource() == labam){
+        }else if(e.getSource() == labam){//label atq mais
             if(stat>0){
              ataque+=1;
               stat-=1;
               setstats();
             }
-        }else if(e.getSource() == labdm){
+        }else if(e.getSource() == labdm){//label def mais
             if(stat>0){
              defesa+=1;
              stat-=1;
              setstats();
             }
-        }else if(e.getSource() == labvme){
+        }else if(e.getSource() == labvme){//label vida menos
             if(stat<10&vida>0&vida>minv){
                 vida-=1;
                 stat+=1;
                 setstats();
             }
-        }else if(e.getSource() == labame){
+        }else if(e.getSource() == labame){//label atq menos
             if(stat<10&ataque>0&ataque>mina){
               ataque-=1;
               stat+=1;
               setstats();
             }
-        }else if(e.getSource() == labdme){
+        }else if(e.getSource() == labdme){//label def menos
             if(stat<10&defesa>0&defesa>mind){
              defesa-=1;
              stat+=1;
              setstats();
             }
-        }else if(e.getSource() == start){
-            dispose();
-            new Jogador(vida,ataque,defesa,classe);
+        }else if(e.getSource() == start){//comecar
+            dispose(); //fechar janela
+            new Jogador(vida,ataque,defesa,classe); //instanciar jogador
         }
     }
-    public void setstats(){
+    public void setstats(){ //metodo para atualizar os status para toda interacao que mexe com eles
         labvida.setText("Vida: "+vida);
         labatq.setText("Ataque: "+ataque);
         labdef.setText("Defesa: "+defesa);
         label3.setText("Pontos de Atributos: "+stat);
     }
-    private void botoes(){
+    private void botoes(){//metodo para criar imagens,botoes e labels, basicamente todos componentes da tela para evitar repeticao
         Container tela = getContentPane();
         setLayout(null);
         icones = new ImageIcon[] {
@@ -115,25 +115,25 @@ public class Selecao extends JFrame implements ActionListener{
         tela.add(labdme);
         tela.add(start);
     }
-    private ImageIcon tamanho(String imagem){
+    private ImageIcon tamanho(String imagem){ //metodo para mudar o tamanho da imagem
         ImageIcon icone = new ImageIcon(imagem);
         Image img = icone.getImage();
         Image resizedImage = img.getScaledInstance(200, 250, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
     }
-    private JButton botoes(String s, int x, int y, int l, int h, ActionListener listener) {
+    private JButton botoes(String s, int x, int y, int l, int h, ActionListener listener) { //metodo para criar os botoes
         JButton botao = new JButton(s);
         botao.setBounds(x, y, l, h);
         botao.addActionListener(listener);
         return botao;
     }
-    private JButton botoes(ImageIcon s, int x, int y, int l, int h, ActionListener listener) {
+    private JButton botoes(ImageIcon s, int x, int y, int l, int h, ActionListener listener) { //metodo para criar os botoes com imagem
         JButton botao = new JButton(s);
         botao.setBounds(x, y, l, h);
         botao.addActionListener(listener);
         return botao;
     }
-    private void stats(int vida, int ataque, int defesa, int classe) {
+    private void stats(int vida, int ataque, int defesa, int classe) { //atualizar os status
         this.minv = vida;
         this.vida = vida;
         this.mina = ataque;
@@ -144,12 +144,12 @@ public class Selecao extends JFrame implements ActionListener{
         this.classe = classe;
         setstats();
     }
-    private JLabel labels(String s, int x, int y, int l, int h){
+    private JLabel labels(String s, int x, int y, int l, int h){ //metodo para criar as labels
         JLabel label = new JLabel(s);
         label.setBounds(x, y, l, h);
         return label;
     }
-    public int getClasse(){
+    public int getClasse(){ //o jogador vai precisar da classe da selecao, a imagem vai mudar de acordo com a classe
         return classe;
     }
 }
