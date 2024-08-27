@@ -9,14 +9,14 @@ public class Selecao extends JFrame implements ActionListener{
     int minv,mind,mina,stat,classe;
     ImageIcon icone,cla2,cla3;JButton botao,botao2,botao3,labam,labvm,labdm,labame,labvme,labdme,start;
     JLabel label2,labvida,labatq,labdef,label3,label4;float vida,ataque,defesa;
-    ImageIcon[] icones;JButton[] botoes;
-    String[] nomes = {"1", "2", "3"};
+    ImageIcon[] icones;JButton[] botoes;private Imagens imagens;
     public Selecao(){
         //adicionar slider atributos e classes
         super("Classe");
         stat=10; //pontos de atribuicao
         vida=ataque=defesa=0;
-        botoes(); //metodos para criar a tela
+        imagens = new Imagens(250, 200);
+        botoes();  //metodos para criar a tela
         setSize(700, 550); //tamanho janela
         setVisible(true); //janela visivel
         setLocationRelativeTo(null); //janela centralizada
@@ -79,14 +79,10 @@ public class Selecao extends JFrame implements ActionListener{
     private void botoes(){//metodo para criar imagens,botoes e labels, basicamente todos componentes da tela para evitar repeticao
         Container tela = getContentPane();
         setLayout(null);
-        icones = new ImageIcon[] {
-            tamanho("1.png"),
-            tamanho("2.png"),
-            tamanho("3.png")
-        };
-        botoes = new JButton[icones.length];
-        for (int i = 0; i < icones.length; i++) {
-            botoes[i] = botoes(icones[i], 200 * i, 30, 200, 250, this);
+        String[] nomes = new String[]{"1","2","3"};
+        botoes = new JButton[3];
+        for (int i = 0; i < 3; i++) {
+            botoes[i] = botoes(imagens.getIcone(i+6), 200 * i, 30, 200, 250, this);
             tela.add(botoes[i]);
             JLabel label = new JLabel(nomes[i]);
             label.setBounds(65 + 200 * i, 10, 110, 20);
@@ -114,12 +110,6 @@ public class Selecao extends JFrame implements ActionListener{
         tela.add(labame);
         tela.add(labdme);
         tela.add(start);
-    }
-    private ImageIcon tamanho(String imagem){ //metodo para mudar o tamanho da imagem
-        ImageIcon icone = new ImageIcon(imagem);
-        Image img = icone.getImage();
-        Image resizedImage = img.getScaledInstance(200, 250, Image.SCALE_SMOOTH);
-        return new ImageIcon(resizedImage);
     }
     private JButton botoes(String s, int x, int y, int l, int h, ActionListener listener) { //metodo para criar os botoes
         JButton botao = new JButton(s);
