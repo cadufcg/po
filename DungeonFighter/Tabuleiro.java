@@ -1,30 +1,31 @@
 package DungeonFighter;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.util.Random;
 
 public class Tabuleiro implements ActionListener{
-    int[][] tabuleiro,player;int i,j,x,y,linha,armadilhas,armadilhas2,inimigos;JButton[][] botao;
-    int posicao;JLabel pos,vida,ataque,defesa,pot;Random random;
-    Jogador jogador;ImageIcon[] icones;Inimigo inimigo;JFrame menu;
+    private int[][] tabuleiro;private int i,j,x,y;private JButton[][] botao;
+    ;private JLabel pos,vida,ataque,defesa,pot;private Random random;private Imagens imagens;
+    private Jogador jogador;private Inimigo inimigo;private JFrame menu;
     Tabuleiro(Jogador jogador){
         menu=new JFrame();
         menu.setLayout(null);
         this.jogador=jogador;
-        armadilhas=5;armadilhas2=5;inimigos=5;//max de armadilhas e inimigos em um tabuleiro
-        random=new Random();tabuleiro=new int[10][5];botao=new JButton[10][5];posicao=00;icones();//matriz tabuleiro para guardar a informacao e botao para mostrar na tela
+        random=new Random();tabuleiro=new int[10][5];botao=new JButton[10][5];//matriz tabuleiro para guardar a informacao e botao para mostrar na tela
         botoes(botao);
         x=0;y=0; //posicao inicial
         pos=new JLabel("Posição:"+String.valueOf(x)+String.valueOf(y));pos.setBounds(100,600,120,20);
         vida=new JLabel("Vida:"+jogador.getVida());vida.setBounds(220,600,120,20);
         ataque=new JLabel("Ataque:"+jogador.getAtaque());ataque.setBounds(220,625,120,20);
         defesa=new JLabel("Defesa:"+jogador.getDefesa());defesa.setBounds(220,650,120,20);
-        pot=new JLabel("Poções:"+jogador.getPocao());pot.setBounds(290,600,120,20);
+        pot=new JLabel("Poções:"+jogador.getPocao());pot.setBounds(100,630,120,20);
         inimigo=new Inimigo(20,20,20);
-        aleatorizar();update();
+        Espaco espaco = new Espaco(10,5,7,5,5);
+        tabuleiro = espaco.aleatorizar();
+        imagens = new Imagens(90,90);
         menu.add(pos);menu.add(vida);menu.add(ataque);menu.add(defesa);menu.add(pot);
+        update();
         menu.setSize(960,768);
         menu.setVisible(true);
         menu.setLocationRelativeTo(null);
@@ -34,10 +35,9 @@ public class Tabuleiro implements ActionListener{
         for(i=0;i<10;i++){
             for(j=0;j<5;j++){
                 if(e.getSource() == botao[i][j]){
-                    if(tabuleiro[i][j]==0&(i==x+1&j==y)||(i==x&j==y+1)||(i==x-1&j==y)||(i==x&j==y-1)||(i==x&j==y)){
+                    if((i==x+1&&j==y)||(i==x&&j==y+1)||(i==x-1&&j==y)||(i==x&&j==y-1)||(i==x&&j==y)){
                         x=i;y=j;
                         movimento(i,j);
-                        update();
                     }else{
                     botao[i][j].setEnabled(false);
                     }
@@ -65,93 +65,58 @@ public class Tabuleiro implements ActionListener{
     private void movimento(int x,int y){//metodo para habilitar e desabilitar os botoes e comecar as situacoes
         for(i=0;i<10;i++){
             for(j=0;j<5;j++){
-                if(i==x+1&j==y||i==x&j==y+1||i==x-1&j==y||i==x&j==y-1){
-                    botao[i][j].setEnabled(true);
-                }else if(i==x&j==y){
+                if((i==x+1&&j==y)||(i==x&&j==y+1)||(i==x-1&&j==y)||(i==x&&j==y-1)||(i==x&&j==y)){
                     botao[i][j].setEnabled(true);
                 }else{
                     botao[i][j].setEnabled(false);
-                }if(tabuleiro[x][y]!=0){
-                    situacao();
                 }
             }
         }
-    }
-    public void situacao(){ //se o jogador pisar em um botao que nao é grama acontece uma situacao
-        if(tabuleiro[i][j]==5){ //se foi uma pocao ele vai ganhar uma pocao
-            jogador.setPocao(jogador.getPocao()+1);
-            tabuleiro[i][j]=0; //a pocao no chao vira grama
-        }else if(tabuleiro[i][j]==1){ //se for buraco ele perde vida fixa
-            jogador.setVida(jogador.getVida()-10);
-        }else if(tabuleiro[i][j]==2){  //se for a outra armadilha ele perde vida de 1 até 20
-            float dano=random.nextFloat(20)+1;
-            jogador.setVida(jogador.getVida()-dano);
-        }else if(tabuleiro[i][j]==3||tabuleiro[i][j]==4){//se for um inimigo ele inicia uma batalha
-            new Batalha(jogador,inimigo);
+        update();
+        if(tabuleiro[x][y]!=0){
+            situacao();
+            update();
         }
     }
-    private void update(){ //metodo para atualizar as informacoes na tela
-        pos.setText("Posição:"+String.valueOf(x)+String.valueOf(y));
-        vida.setText("Vida:"+jogador.getVida());
-        ataque.setText("Ataque:"+jogador.getAtaque());
-        defesa.setText("Defesa:"+jogador.getDefesa());
-        pot.setText("Poções:"+jogador.getPocao());
-        for(i=0;i<10;i++){
-            for(j=0;j<5;j++){
-                botao[i][j].setIcon(returnimage(i,j));
-            }
-        }   
+    
+public void situacao(){ //se o jogador pisar em um botao que nao é grama acontece uma situacao
+    int caso = tabuleiro[x][y];
+    switch(caso){
+    case 5: //se foi uma pocao ele vai ganhar uma pocao
+        jogador.setPocao(jogador.getPocao()+1);
+        tabuleiro[x][y]=0; //a pocao no chao vira grama
+        break;
+    case 1: //se for buraco ele perde vida fixa
+        jogador.setVida(jogador.getVida()-10);
+        break;
+    case 2:  //se for a outra armadilha ele perde vida de 1 até 20
+        int dano=random.nextInt(20)+1;
+        jogador.setVida(jogador.getVida()-dano);
+        break;
+    case 3:
+    case 4://se for um inimigo ele inicia uma batalha
+        new Batalha(jogador,inimigo);
+        break;
     }
-    private void aleatorizar(){ //metodo usado no inicio para distribuir o tabuleiro, melhorar a distribuicao,
-        for(i=0;i<10;i++){     //o jeito que eu fiz nao garante o maximo de distribuicao e o chefe nao anda na ultima linha ainda
-            for(j=0;j<5;j++){
-                if(i==0&j==0){
-                    tabuleiro[i][j]=0;
-                }else if(Math.random()<0.15&armadilhas>0){
-                    armadilhas-=1;
-                    tabuleiro[i][j]=1;
-                }else if(Math.random()<0.05&armadilhas2>0){
-                    armadilhas2-=1;
-                    tabuleiro[i][j]=2;
-                }else if(i==9&j==4){
-                    tabuleiro[i][j]=3;
-                }else if(Math.random()<0.2&inimigos>0){
-                    inimigos-=1;
-                    tabuleiro[i][j]=4;
-                }else if(Math.random()<0.3){
-                    tabuleiro[i][j]=5;
-                }else{
-                    tabuleiro[i][j]=0;
-                }
-            }
+    
+}
+private void update(){ //metodo para atualizar as informacoes na tela
+    pos.setText("Posição:"+String.valueOf(x)+String.valueOf(y));
+    vida.setText("Vida:"+jogador.getVida());
+    ataque.setText("Ataque:"+jogador.getAtaque());
+    defesa.setText("Defesa:"+jogador.getDefesa());
+    pot.setText("Poções:"+jogador.getPocao());
+    for(i=0;i<10;i++){
+        for(j=0;j<5;j++){
+            botao[i][j].setIcon(espaco(i,j));
         }
+    }   
+}
+private ImageIcon espaco(int i,int j){//metodo para saber o que esta no botao no momento, retornando a imagem especifica
+    if (i == x && j == y) {
+        return imagens.getJogador(jogador.getClasse());
     }
-    private void icones(){ //metodo para definir as imagens dos obstaculos
-        icones = new ImageIcon[7];
-        icones[0] = tamanho("grass.png");//grama
-        icones[1] = tamanho("hole.jpg");//armadilha
-        icones[2] = tamanho("trap.png");//armadilha2
-        icones[3] = tamanho("boss.png");//boss
-        icones[4] = tamanho("enemy.png");//inimigo
-        icones[5] = tamanho("potion.png");//pocao
-        if(jogador.getClasse()==0){
-            icones[6] = tamanho("1.png");//jogador
-        }else if(jogador.getClasse()==1){
-            icones[6] = tamanho("2.png");//jogador
-        }else if(jogador.getClasse()==2){
-            icones[6] = tamanho("3.png");//jogador
-        }              
-    }
-    private ImageIcon tamanho(String imagem){ //tamanho imagem
-        ImageIcon icone = new ImageIcon(imagem);
-        Image img = icone.getImage();
-        Image resizedImage = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH);
-        return new ImageIcon(resizedImage);
-    }
-    private ImageIcon returnimage(int i,int j){ //metodo para saber o que esta no botao no momento, retornando a imagem especifica
-        if(i==x&j==y){
-            return icones[6];
-        }
-        return icones[tabuleiro[i][j]];
-    }
+    return imagens.getIcone(tabuleiro[i][j]);
+}
+   
 }
