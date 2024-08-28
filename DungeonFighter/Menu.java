@@ -5,11 +5,12 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class Menu extends JFrame implements ActionListener{
-    JButton botao1,botao2,botao3;Selecao sel;
-    JButton[] botoes;String[] textos;Container menu;
+    private JButton[] botoes;private String[] textos;private Container menu;public int[][] backup;public int novamente;
     Menu(){
+        super("Menu");
         menu= getContentPane();
         setLayout(null);
+        backup = new int[10][5];
         ImageIcon image=new ImageIcon("menu.jpg");
         Image img = image.getImage(); 
         Image resizedImage = img.getScaledInstance(960, 768, Image.SCALE_SMOOTH); //funcao pra enquadrar a imagem na resolucao
@@ -23,14 +24,17 @@ public class Menu extends JFrame implements ActionListener{
         menu.setComponentZOrder(background, menu.getComponentCount() - 1); //metodo para os botoes ficarem acima do background
         setVisible(true);
         setLocationRelativeTo(null); 
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setBackground(new Color(135,50,250));
     }
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == botoes[0]){//jogar normal
-            new Selecao();
+            new Selecao(false);
+            this.dispose();
         }else if(e.getSource() == botoes[1]){//jogar debug, no final botar instanciar a selecao
-            new Jogador(0,0,0,0);
+            new Selecao(true);
+            this.dispose();
         }else if(e.getSource() == botoes[2]){//Sair
             JFrame frame = new JFrame();
             String[] options = new String[2];

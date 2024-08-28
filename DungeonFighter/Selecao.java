@@ -6,17 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Selecao extends JFrame implements ActionListener{
-    int minv,mind,mina,stat,classe;
-    ImageIcon icone,cla2,cla3;JButton botao,botao2,botao3,labam,labvm,labdm,labame,labvme,labdme,start;
-    JLabel label2,labvida,labatq,labdef,label3,label4;float vida,ataque,defesa;
-    ImageIcon[] icones;JButton[] botoes;private Imagens imagens;
-    public Selecao(){
+    private int minv,mind,mina,stat,classe;private JButton labam,labvm,labdm,labame,labvme,labdme,start,hab;
+    private JLabel labvida,labatq,labdef,label3;private float vida,ataque,defesa; 
+    private JButton[] botoes;private Imagens imagens;private String[] habilidades;private boolean debug;
+    public Selecao(boolean debug){
         //adicionar slider atributos e classes
         super("Classe");
         stat=10; //pontos de atribuicao
-        vida=ataque=defesa=0;
+        this.debug=debug;
+        habilidades = new String[]{"Espadão-\n Golpeia forte","Reconhecimento-\n reconhece armadilhas","Defesa absoluta-\n Defende absolutamente"};
         imagens = new Imagens(250, 200);
         botoes();  //metodos para criar a tela
+        stats(40, 35, 45, 0);
         setSize(700, 550); //tamanho janela
         setVisible(true); //janela visivel
         setLocationRelativeTo(null); //janela centralizada
@@ -24,11 +25,11 @@ public class Selecao extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == botoes[0]){ //classe 1
-            stats(10, 20, 30, 0);
+            stats(40, 35, 45, 0);
 	    }else if(e.getSource() == botoes[1]){ //classe 2
-            stats(20, 15, 15, 1);
+            stats(60, 55, 5, 1);
         }else if(e.getSource() == botoes[2]){ //classe 3
-            stats(30, 20, 10, 2);
+            stats(100, 15, 35, 2);
         }else if(e.getSource() == labvm){ //label vida mais
             if(stat>0){
                 vida+=1;
@@ -65,9 +66,12 @@ public class Selecao extends JFrame implements ActionListener{
              stat+=1;
              setstats();
             }
+        }else if(e.getSource() == hab){
+            JOptionPane.showMessageDialog(this,habilidades[classe],"Habilidade", JOptionPane.INFORMATION_MESSAGE);
         }else if(e.getSource() == start){//comecar
+            Jogador jogador = new Jogador(vida,ataque,defesa,classe,debug); //instanciar jogador
+            jogador.novojogo();
             dispose(); //fechar janela
-            new Jogador(vida,ataque,defesa,classe); //instanciar jogador
         }
     }
     public void setstats(){ //metodo para atualizar os status para toda interacao que mexe com eles
@@ -79,7 +83,7 @@ public class Selecao extends JFrame implements ActionListener{
     private void botoes(){//metodo para criar imagens,botoes e labels, basicamente todos componentes da tela para evitar repeticao
         Container tela = getContentPane();
         setLayout(null);
-        String[] nomes = new String[]{"1","2","3"};
+        String[] nomes = new String[]{"Guerreiro","Arqueiro","Escudo"};
         botoes = new JButton[3];
         for (int i = 0; i < 3; i++) {
             botoes[i] = botoes(imagens.getIcone(i+6), 200 * i, 30, 200, 250, this);
@@ -99,6 +103,8 @@ public class Selecao extends JFrame implements ActionListener{
         labame = botoes("-", 0, 375, 110, 20, this);
         labdme = botoes("-", 0, 425, 110, 20, this);
         start = botoes("Start", 400, 325, 200, 100, this);
+        hab = botoes("Habilidade",255,295,130,50,this);
+        tela.add(hab);
         tela.add(labvida);
         tela.add(labatq);
         tela.add(labdef);
