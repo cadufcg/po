@@ -5,7 +5,7 @@ public class Batalha extends JFrame implements ActionListener{
     private int classe,tipo,duracao;private boolean sucesso;
     private Jogador jogador;
     private Inimigo inimigo;private Tabuleiro tabuleiro;
-    private JLabel jogadorVida, inimigoVida, ini,jog,cargas;
+    private JLabel jogadorVida, inimigoVida, ini,jog,cargas,pocoes;
     private JButton atacar, hab, pocao,sair; private JTextArea log;private JScrollPane scrollpane;
     private Imagens imagens; private float dano;
     public Batalha(Jogador jogador,Inimigo inimigo,Tabuleiro tabuleiro){
@@ -27,9 +27,11 @@ public class Batalha extends JFrame implements ActionListener{
         imagens = new Imagens(200,250);
         jog = new JLabel(imagens.getIcone(6+classe));
         ini = new JLabel(imagens.getIcone(9+tipo));
-        cargas = new JLabel(""+jogador.getCargas());
+        pocoes = new JLabel("Poções: "+jogador.getPocao());
+        pocoes.setBounds(400,450,100,50);
+        cargas = new JLabel("Cargas: "+jogador.getCargas());
         cargas.setBounds(250,450,100,50);
-        sair = new JButton("sair");
+        sair = new JButton("Sair");
         sair.setBounds(300,100,100,50);
         jog.setBounds(10, 90, 250, 200);
         ini.setBounds(430, 90, 250, 200);
@@ -46,6 +48,7 @@ public class Batalha extends JFrame implements ActionListener{
         log.setEditable(false); 
         scrollpane = new JScrollPane(log);
         scrollpane.setBounds(265, 200, 150, 200);
+        add(pocoes);
         add(cargas);
         add(jog);
         add(ini);
@@ -116,7 +119,8 @@ public class Batalha extends JFrame implements ActionListener{
     public void update(){
         jogadorVida.setText("Vida do Jogador: " + jogador.getVida());
         inimigoVida.setText("Vida do Inimigo: " + inimigo.getVida());
-        cargas.setText("" + jogador.getCargas());
+        cargas.setText("Cargas: " + jogador.getCargas());
+        pocoes.setText("Poções: "+ jogador.getPocao());
     }
     private void addLog(String mensagem) {
         log.append(mensagem + "\n"); 
